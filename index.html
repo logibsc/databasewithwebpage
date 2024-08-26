@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Search Stock</title>
+</head>
+<body>
+  <h1>Search Stock</h1>
+  <label for="symbolInput">Enter Stock Symbol:</label>
+  <input type="text" id="symbolInput" placeholder="Enter stock symbol">
+  <button id="searchButton">Search</button>
+  <div id="result"></div>
+
+  <script>
+    document.getElementById('searchButton').addEventListener('click', async () => {
+      const symbol = document.getElementById('symbolInput').value;
+      const resultDiv = document.getElementById('result');
+      resultDiv.innerHTML = '';
+
+      try {
+        const response = await fetch(`http://localhost:3000/stock?symbol=${encodeURIComponent(symbol)}`);
+        if (response.ok) {
+          const stock = await response.json();
+          resultDiv.innerHTML = `
+            <p>Symbol: ${stock.symbol}</p>
+            <p>Name: ${stock.name}</p>
+            <p>Currency: ${stock.currency}</p>
+            <p>Exchange: ${stock.exchange}</p>
+            <p>MIC Code: ${stock.mic_code}</p>
+            <p>Country: ${stock.country}</p>
+            <p>Type: ${stock.type}</p>
+          `;
+        } else {
+          resultDiv.innerHTML = '<p>Stock not found</p>';
+        }
+      } catch (error) {
+        resultDiv.innerHTML = '<p>Error fetching stock details</p>';
+      }
+    });
+  </script>
+</body>
+</html>
